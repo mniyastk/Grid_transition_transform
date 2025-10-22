@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Grid, Transition, Transform, Animation & Media Queries</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f6faff;
+    margin: 0;
+    padding: 0;
+  }
+  #slideBox {
+    max-width: 880px;
+    background: #fff;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 12px;
+  }
+  h2 { color: #005fcc; }
+  code, pre { background: #eef8ff; border-radius: 4px; padding: 4px 8px; }
+  .demo {
+    border: 1px solid #ddd;
+    padding: 14px;
+    margin-top: 14px;
+    border-radius: 8px;
+    background: #fbfcfd;
+  }
+  button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    margin: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:disabled { background: #ccc; cursor: default; }
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .grid-item {
+    background: #b8e986;
+    text-align: center;
+    padding: 20px;
+  }
+  .box-transition { width: 100px; height: 100px; background: #8ad; transition: width 0.5s, background 0.5s; }
+  .box-transition:hover { width: 200px; background: #58f; }
+  .box-transform { width: 100px; height: 100px; background: #f58; transition: transform 0.4s; }
+  .box-transform:hover { transform: rotate(20deg) scale(1.2); }
+  @keyframes bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+    100% { transform: translateY(0); }
+  }
+  .animate-ball {
+    width: 60px; height: 60px; border-radius: 50%; background: #ff6781; animation: bounce 2s infinite;
+  }
+  .media-box {
+    background: #9cf; color: #000; text-align: center; padding: 10px; margin-top: 10px;
+  }
+  @media (max-width: 600px) { .media-box { background: #f99; color: #fff; } }
+</style>
+</head>
+<body>
+<div id="slideBox"></div>
+<div style="text-align:center;">
+  <button id="prev">Previous</button>
+  <button id="next">Next</button>
+</div>
+<script>
+const slides = [
+  {
+    title: 'CSS Layout & Effects: Advanced Concepts',
+    content:`<p>This lesson introduces five powerful CSS concepts that bring your web pages to life and make them responsive. You’ll learn how web designers create layouts that adapt to any device, add smooth motion, and build modern web experiences using:</p>
+    <ul>
+      <li><b>CSS Grid</b> — for flexible page layouts</li>
+      <li><b>Transitions</b> — for smooth style changes</li>
+      <li><b>Transforms</b> — for rotating, scaling, and moving elements</li>
+      <li><b>Animations</b> — for motion and visual effects</li>
+      <li><b>Media Queries</b> — for making pages responsive across devices</li>
+    </ul>`
+  },
+  {
+    title: '🧱 CSS Grid',
+    content:`<p><strong>Definition:</strong> CSS Grid is a two-dimensional layout system in CSS. It allows you to design web pages using rows and columns, giving you precise control over where elements are placed on the page. Unlike older layout methods like floating or using tables, Grid lets you divide your layout into clearly defined regions or align items without messy code.</p>
+    <p><strong>In simple words :</strong> Imagine your webpage as a spreadsheet — each cell of that sheet can hold a piece of content. With Grid, you can easily say things like “put the header in the top row, the sidebar in the left column, and the main content in the center.”</p>
+    <pre>.container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }</pre>
+    <div class='demo'>
+      <div class='grid-container'>
+        <div class='grid-item'>1</div>
+        <div class='grid-item'>2</div>
+        <div class='grid-item'>3</div>
+        <div class='grid-item'>4</div>
+        <div class='grid-item'>5</div>
+        <div class='grid-item'>6</div>
+      </div>
+      <p>👉 Try resizing the window! Grid automatically keeps a balanced layout.</p>
+    </div>`
+  },
+  {
+    title: '🎨 Transition',
+    content:`<p><strong>Definition:</strong> A transition in CSS lets you control how properties change smoothly over a period of time, instead of changing instantly. You can pick which properties to animate, how long the change lasts, and what kind of easing effect it uses (like slow start or slow end).</p>
+    <p><strong>In simple words :</strong> When you hover over a button and it gradually changes color instead of switching instantly, that’s a transition. Transitions bring subtle motion that feels natural and modern, improving user experience.</p>
+    <pre>div { transition: all 0.5s ease; }</pre>
+    <div class='demo'>
+      <div class='box-transition'></div>
+      <p>👉 Hover over the box — watch its width and color change smoothly!</p>
+    </div>`
+  },
+  {
+    title: '🔁 Transform',
+    content:`<p><strong>Definition:</strong> CSS Transform allows you to visually manipulate an element by moving, rotating, scaling (resizing), or skewing it in 2D or 3D space. It doesn’t disrupt other content; it only changes how the element looks within its own space.</p>
+    <p><strong>In simple words :</strong> Think of “transform” like picking up a card on your screen and tilting or stretching it. This is super useful for making hover effects, buttons that pop, or animations that stand out.</p>
+    <pre>div:hover { transform: rotate(45deg) scale(1.5); }</pre>
+    <div class='demo'>
+      <div class='box-transform'></div>
+      <p>👉 Hover over this pink box to see rotation and scaling happen!</p>
+    </div>`
+  },
+  {
+    title: '🚀 Animation',
+    content:`<p><strong>Definition:</strong> CSS Animations allow you to define keyframes — the different points in an animation — and smoothly transition between them over time. It uses the <code>@keyframes</code> rule to describe what should happen at the start, middle, and end of the animation.</p>
+    <p><strong>In simple words :</strong> Animation is like giving your website a heartbeat — it makes things move continuously without you needing to interact. For example, a ball can bounce up and down forever, or a loading icon can spin endlessly.</p>
+    <pre>@keyframes bounce { 0% { transform: translateY(0); } 50% { transform: translateY(-30px); } 100% { transform: translateY(0); } }</pre>
+    <div class='demo' style='height:100px;'>
+      <div class='animate-ball'></div>
+      <p>👉 The pink ball above continually bounces — looping this motion infinitely!</p>
+    </div>`
+  },
+  {
+    title: '📱 Media Queries',
+    content:`<p><strong>Definition:</strong> Media Queries are CSS rules that apply styles conditionally depending on device characteristics, such as screen width, height, orientation, or resolution. They are at the heart of responsive web design — ensuring websites look good on mobile phones, tablets, and desktops.</p>
+    <p><strong>In simple words :</strong> Imagine tailoring an outfit — the same design but customized to fit different sizes. Media queries adjust your website's appearance to “fit” users’ devices by changing layouts, font sizes, and images to be comfortable for each screen.</p>
+    <pre>@media (max-width:600px) { div { background: red; } }</pre>
+    <div class='demo'>
+      <div class='media-box'>Resize your browser window! On small screens, this box changes color.</div>
+    </div>`
+  },
+  {
+    title: '🎓 Summary & Review',
+    content:`<p>Let’s recap what you’ve learned:</p>
+    <ul>
+      <li><b>Grid</b> — helps you layout elements in rows and columns easily.</li>
+      <li><b>Transitions</b> — create smooth changes when property values update.</li>
+      <li><b>Transforms</b> — rotate or resize elements for dynamic visuals.</li>
+      <li><b>Animations</b> — keep things moving continuously with <code>@keyframes</code>.</li>
+      <li><b>Media Queries</b> — adapt designs for all screen sizes.</li>
+    </ul>
+    <p><b>Practice idea:</b> Create a photo gallery grid where each image enlarges slightly on hover (using <code>transform</code> and <code>transition</code>), and the layout shifts on mobile screens (using <code>media queries</code>).</p>`
+  }
+];
+
+let current = 0;
+const box = document.getElementById('slideBox');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+
+function render(i) {
+  const s = slides[i];
+  box.innerHTML = `<h2>${s.title}</h2>${s.content}`;
+  prev.disabled = i === 0;
+  next.disabled = i === slides.length - 1;
+}
+prev.onclick = ()=>{ if(current>0){ current--; render(current); } };
+next.onclick = ()=>{ if(current<slides.length-1){ current++; render(current); } };
+render(current);
+</script>
+</body>
+</html>
